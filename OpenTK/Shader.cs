@@ -1,24 +1,19 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using System.IO;
 using OpenTK.Graphics.OpenGL4;
+using OpenTK.Mathematics;
 
 namespace OpenTK
 {
     public class Shader
     {
-        public int Handle { get; private set;}
+        public int Handle { get; private set; }
 
-        public Shader(string vertexPath, string fragmentPath) 
+        public Shader(string vertexPath, string fragmentPath)
         {
-            //Carga el codigo fuente de los shaders
             string vertexShaderSource = File.ReadAllText(vertexPath);
             string fragmentShaderSource = File.ReadAllText(fragmentPath);
 
-            // Crea y Compila los Shaders
             int vertexShader = GL.CreateShader(ShaderType.VertexShader);
             GL.ShaderSource(vertexShader, vertexShaderSource);
             GL.CompileShader(vertexShader);
@@ -29,14 +24,12 @@ namespace OpenTK
             GL.CompileShader(fragmentShader);
             CheckCompileErrors(fragmentShader, "FRAGMENT");
 
-            //Crea el programa y adjunta los Shaders
             Handle = GL.CreateProgram();
             GL.AttachShader(Handle, vertexShader);
             GL.AttachShader(Handle, fragmentShader);
             GL.LinkProgram(Handle);
             CheckCompileErrors(Handle, "PROGRAM");
 
-            //Limpiar los Shaders Individuales
             GL.DetachShader(Handle, vertexShader);
             GL.DetachShader(Handle, fragmentShader);
             GL.DeleteShader(vertexShader);
@@ -48,13 +41,19 @@ namespace OpenTK
             GL.UseProgram(Handle);
         }
 
+        public void SetMatrix4(string name, Matrix4 matrix)
+        {
+            int location = GL.GetUniformLocation(Handle, name);
+            GL.UniformMatrix4(location, false, ref matrix);
+        }
+
         private void CheckCompileErrors(int shader, string type)
         {
             GL.GetShader(shader, ShaderParameter.CompileStatus, out int success);
             if (success == 0)
             {
                 string infoLog = GL.GetShaderInfoLog(shader);
-                Console.WriteLine(infoLog);
+                Console.WriteLine($"ERROR::SHADER_COMPILATION_ERROR of type: {type}\n{infoLog}");
             }
         }
 
@@ -62,6 +61,5 @@ namespace OpenTK
         {
             GL.DeleteProgram(Handle);
         }
-
     }
 }
