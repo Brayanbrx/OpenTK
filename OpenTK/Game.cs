@@ -14,7 +14,7 @@ namespace OpenTK
         private Shader shader;
 
         // Posición central del objeto (puedes modificar esta)
-        private Vector3 uPosition = new Vector3(0.0f, 0.0f, 0.0f);
+        private Vector3 uPosition = new Vector3(2.0f, 0.0f, 2.0f);
 
         private float[] vertices = {
             // Columna izquierda
@@ -75,7 +75,6 @@ namespace OpenTK
             CreateBuffers();
             shader.Use();
             SetMatrices();
-            
         }
 
         protected override void OnRenderFrame(FrameEventArgs e)
