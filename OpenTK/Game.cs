@@ -13,7 +13,7 @@ namespace OpenTK
         private int ElementBufferObject;
         private Shader shader;
 
-        // Posición central del objeto (puedes modificar esta)
+        // Posición central del objeto
         private Vector3 uPosition = new Vector3(2.0f, 0.0f, 2.0f);
 
         private float[] vertices = {
