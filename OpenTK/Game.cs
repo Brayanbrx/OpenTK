@@ -6,16 +6,40 @@ using System;
 
 namespace OpenTK
 {
+    /// <summary>
+    /// Representa una ventana de juego que renderiza una figura usando OpenGL
+    /// OpenTK para la gestion de la ventana y la representacion grafica
+    /// </summary>
     public class Game : GameWindow
     {
+        /// <summary>
+        /// Identificador del VAO, encapsula los estados de los buffers de vertices
+        /// </summary>
         private int VertexArrayObject;
+
+        /// <summary>
+        /// Identificador del VBO, almacena los datos de los vertices
+        /// </summary>
         private int VertexBufferObject;
+
+        /// <summary>
+        /// Identificador del EBO, almacena los indices que indican como conectar los vertices
+        /// </summary>
         private int ElementBufferObject;
+
+        /// <summary>
+        /// Instancia del Shader, usado para renderizar la figura
+        /// </summary>
         private Shader shader;
 
-        // Posición central del objeto
+        /// <summary>
+        /// Posicion en donde se colocara la figura en forma de U (x,y,z)
+        /// </summary>
         private Vector3 uPosition = new Vector3(2.0f, 0.0f, 2.0f);
 
+        /// <summary>
+        /// Lista de coordenadas de los vertices
+        /// </summary>
         private float[] vertices = {
             // Columna izquierda
             -1.0f, 0.0f,  0.3f,  -0.7f, 0.0f,  0.3f,  -0.7f, 2.0f,  0.3f,  -1.0f, 2.0f,  0.3f,
@@ -30,6 +54,9 @@ namespace OpenTK
             -0.7f, 0.0f, -0.3f,   0.7f, 0.0f, -0.3f,   0.7f, 0.3f, -0.3f,  -0.7f, 0.3f, -0.3f
         };
 
+        /// <summary>
+        /// Lista de indices que definen como se conectan los vertices, se usa con el EBO
+        /// </summary>
         private int[] indices = {
             // Columna izquierda (6 caras)
             0, 1, 2,  2, 3, 0, // cara frontal
@@ -56,6 +83,12 @@ namespace OpenTK
             16, 17, 21,  21, 20, 16  // base inferior
         };
 
+        /// <summary>
+        /// Constructor. Inicializa la ventana con tamaño y titulo
+        /// </summary>
+        /// <param name="width">Ancho de ventana</param>
+        /// <param name="height">Alto de ventana</param>
+        /// <param name="title">Titulo de ventana</param>
         public Game(int width, int height, string title)
             : base(GameWindowSettings.Default, new NativeWindowSettings()
             {
@@ -66,6 +99,9 @@ namespace OpenTK
             shader = new Shader("shader.vert", "shader.frag");
         }
 
+        /// <summary>
+        /// Se ejecuta una vez cuando se carga la ventana.
+        /// </summary>
         protected override void OnLoad()
         {
             base.OnLoad();
@@ -77,6 +113,11 @@ namespace OpenTK
             SetMatrices();
         }
 
+        /// <summary>
+        /// Se ejecuta en cada frame, para renderizar la escena.
+        /// Limpia los buffers, utiliza el shader y dibuja los elementos
+        /// </summary>
+        /// <param name="e">Informacion del frame</param>
         protected override void OnRenderFrame(FrameEventArgs e)
         {
             base.OnRenderFrame(e);
@@ -88,6 +129,9 @@ namespace OpenTK
             SwapBuffers();
         }
 
+        /// <summary>
+        /// Libera los recursos usados por OpenGL, cuando se cierra la ventana
+        /// </summary>
         protected override void OnUnload()
         {
             base.OnUnload();
@@ -97,6 +141,9 @@ namespace OpenTK
             shader.Dispose();
         }
 
+        /// <summary>
+        /// Crea los buffers VAO, VBO y EBO, configura los atributos de vertices
+        /// </summary>
         private void CreateBuffers()
         {
             VertexArrayObject = GL.GenVertexArray();
@@ -114,6 +161,10 @@ namespace OpenTK
             GL.EnableVertexAttribArray(0);
         }
 
+        /// <summary>
+        /// Configura las matrices de modelo, vista y proyeccion.
+        /// Son necesarias para transformar el objeto en el espacio 3D
+        /// </summary>
         private void SetMatrices()
         {
             Matrix4 model = Matrix4.CreateTranslation(uPosition);
